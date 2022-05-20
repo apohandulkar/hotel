@@ -1,0 +1,24 @@
+<IfModule mod_rewrite.c>
+
+RewriteEngine On
+
+RewriteBase /KOT/
+
+RewriteRule ^index\.php$ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule . /KOT/index.php [L]
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  
+  #SetEnv CI_ENV testing     # For Testing
+  #SetEnv CI_ENV production  # For Production
+</IfModule>
+
+
+
