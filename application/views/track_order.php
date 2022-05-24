@@ -142,6 +142,7 @@ foreach($order_list as $r)
 	$order_id_row=$r['id'];
 	$order_id=$r['order_id'];
 	$hotel_id=$r['hotel_id'];
+	$c_id=$r['cust_id'];
 	$addtress_id=$r['addtress_id'];
 	$table_id=$r['table_id'];
 	$payment_method=$r['payment_method'];
@@ -204,10 +205,10 @@ foreach($order_list as $r)
   ?>
     	  <br /> <a href="#demo1_<?=$r['id']?>" data-toggle="collapse" style="color:#f30">VIEW DETAILS </a>
 		  <?php
-			if($comming_from=='Table')
+			if(($comming_from=='Table' || $comming_from=='Add_On') && $paid_unpaid == 'unpaid')
 			{
 			?>
-				<a href="<?php echo site_url();?>table/addon/<?=$r['id']?>"  style="color:#f30"> ADD ON</a>
+				<a href="<?php echo site_url();?>Update/menu/<?=$hotel_id?>/<?=$table_id?>/<?=$c_id?>/<?=$order_id?>" style="color:#f30"> ADD ON</a>
 
 			<?php
 			}
@@ -264,10 +265,17 @@ foreach($order_list as $r)
 <div class="vl"></div>
 
 <?php
-  if($comming_from=='Table')
+  if(($comming_from=='Table' || $comming_from=='Add_On'))
   {
   ?>
-	<p><img style="width:4%;" src="<?php echo site_url();?>uploads/table.svg" alt="" ><?php echo " ".$table_id; ?></p>
+  
+	<p><img style="width:4%;" src="<?php echo site_url();?>uploads/table.svg" alt="" ><?php 
+	
+	$sql = "SELECT * FROM tables where id='$table_id'";
+	$record = $this->db->query($sql);
+	$res=$record->result_array();
+	echo " ".$res[0]['name']; 
+	?></p>
 
 <?php
   }

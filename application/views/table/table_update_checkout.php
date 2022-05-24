@@ -91,7 +91,7 @@ footer {
 								if($type=='table')
 								{
 								?>
-								<a href="<?php echo site_url();?>table/menu/<?=$hotel_details[0]['id']?>/<?=$table[0]['id']?>/<?=$id?>"><i class="fa fa-angle-left" aria-hidden="true"></i> Back to Restaurant</a>
+								<a href="<?php echo site_url();?>update/menu/<?=$hotel_details[0]['id']?>/<?=$table[0]['id']?>/<?=$id?>"><i class="fa fa-angle-left" aria-hidden="true"></i> Back to Restaurant</a>
 								</div>     
 								<div class="col-md-5">
 									<center><a class="navbar-brand pull-right" href="<?php echo site_url();?>table/menu/<?=$table[0]['id']?>/<?=$id?>">
@@ -104,10 +104,10 @@ footer {
 								else 
 								{
 									?>
-								<a href="<?php echo site_url();?>table/menu/<?=$hotel_details[0]['id']?>/<?=$table[0]['id']?>/<?=$id?>"><i class="fa fa-angle-left" aria-hidden="true"></i> Back to Restaurant</a>
+								<a href="<?php echo site_url();?>update/menu/<?=$hotel_details[0]['id']?>/<?=$table[0]['id']?>/<?=$id?>"><i class="fa fa-angle-left" aria-hidden="true"></i> Back to Restaurant</a>
 									</div>     
 								<div class="col-md-5">
-									<center><a class="navbar-brand pull-right" href="<?php echo site_url();?>Table/<?=$id?>">
+									<center><a class="navbar-brand pull-right" href="<?php echo site_url();?>Update/<?=$id?>">
 									<img class="img-rounded" src="<?=$home_info[0]['logo']?>" alt="">
 									</a>
 									</center>
@@ -128,8 +128,8 @@ if(!preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|
 								?>
  <li class="nav-item dropdown pull-right"> <a class="dropdown-toggle" data-toggle="dropdown" style="color:#111"  aria-haspopup="true" aria-expanded="false"><i class="fa fa-user" aria-hidden="true"></i> <?=$a[0]['name']?></a>
                                 <div class="dropdown-menu"> 
-								<a class="dropdown-item"  href="<?php echo site_url();?>Table/profile/<?=$id?>">My Profile</a> 
-								<a class="dropdown-item" href="<?php echo site_url();?>Table/orderHistory/<?=$id?>">Orders History</a>
+								<a class="dropdown-item"  href="<?php echo site_url();?>Update/profile/<?=$id?>">My Profile</a> 
+								<a class="dropdown-item" href="<?php echo site_url();?>Update/orderHistory/<?=$id?>">Orders History</a>
 								<a class="dropdown-item" href="../../Logout">Logout</a></div>
                             </li>								<?php
 								}
@@ -279,8 +279,9 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
                                     </div>
 									</div>
 									</form>
-    					<form action="<?php echo site_url();?>table/save_cart" method="post">
+    					<form action="<?php echo site_url();?>Update/save_cart" method="post">
 						<input type="hidden" name="id" value="<?=$id?>">
+						<input type="hidden" name="oid" value="<?=$order?>">
 						<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id']?>">
 						<input type="hidden" name="producttype" value="<?=$type?>">
 
@@ -319,8 +320,9 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		else
 		{
 			?>
-			<form action="<?php echo site_url();?>table/save_cart" method="post">
+			<form action="<?php echo site_url();?>Update/save_cart" method="post">
 						<input type="hidden" name="id" value="<?=$id?>">
+						<input type="hidden" name="oid" value="<?=$order?>">
 									<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id']?>">
 			<?php
 		}
@@ -451,7 +453,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var hotel_id   	  = <?php echo $hotel_details[0]['id']?>;
 			var producttype = "table";
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/add_to_cart",
+				url : "<?php echo site_url();?>/Update/add_to_cart",
 				method : "POST",
 				data : {product_id: product_id,menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success: function(data){
@@ -465,7 +467,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		});
 
 		
-		$('#detail_cart').load("<?php echo site_url();?>/Table/load_cart");
+		$('#detail_cart').load("<?php echo site_url();?>/Update/load_cart");
 
 		
 		$(document).on('click','.romove_cart',function(){
@@ -480,7 +482,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var producttype = "table";
 			var quantity  = 1;
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/delete_cart1",
+				url : "<?php echo site_url();?>/Update/delete_cart1",
 				method : "POST",
 				data : {row_id : row_id, menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success :function(data){
@@ -501,7 +503,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var producttype = "table";
 			var quantity  = 1;
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/add_qty_cart",
+				url : "<?php echo site_url();?>/Update/add_qty_cart",
 				method : "POST",
 				data : {row_id : row_id, menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success :function(data){
@@ -514,7 +516,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		$(document).on('click','.romove_cart1',function(){
 			var row_id=$(this).attr("id"); 
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/delete_cart",
+				url : "<?php echo site_url();?>/Update/delete_cart",
 				method : "POST",
 				data : {row_id : row_id},
 				success :function(data){
@@ -529,11 +531,11 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		var id=<?php echo $this->session->userdata('id');?>;
 
 	   $.ajax({
-		url:"<?php echo base_url(); ?>Table/clear",
+		url:"<?php echo base_url(); ?>Update/clear",
 		success:function(data)
 		{
 			//alert(ii);
-			window.location = "<?php echo site_url();?>/Table/menu/"+iih+"/"+id;
+			window.location = "<?php echo site_url();?>/Update/menu/"+iih+"/"+id;
 		}
 	   });
  
@@ -560,7 +562,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var hotel_id   	  = <?php echo $hotel_details[0]['id']?>;
 			var producttype = "deliver";
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/add_to_cart",
+				url : "<?php echo site_url();?>/Update/add_to_cart",
 				method : "POST",
 				data : {product_id: product_id,menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success: function(data){
@@ -574,7 +576,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		});
 
 		
-		$('#detail_cart').load("<?php echo site_url();?>/Table/load_cart");
+		$('#detail_cart').load("<?php echo site_url();?>/Update/load_cart");
 
 		
 		$(document).on('click','.romove_cart',function(){
@@ -589,7 +591,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var producttype = "deliver";
 			var quantity  = 1;
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/delete_cart1",
+				url : "<?php echo site_url();?>/Update/delete_cart1",
 				method : "POST",
 				data : {row_id : row_id, menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success :function(data){
@@ -610,7 +612,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			var producttype = "deliver";
 			var quantity  = 1;
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/add_qty_cart",
+				url : "<?php echo site_url();?>/Update/add_qty_cart",
 				method : "POST",
 				data : {row_id : row_id, menu_id: menu_id, product_name: product_name, product_price: product_price, quantity: quantity, hotel_id: hotel_id, productcat: productcat, producttype: producttype},
 				success :function(data){
@@ -623,7 +625,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		$(document).on('click','.romove_cart1',function(){
 			var row_id=$(this).attr("id"); 
 			$.ajax({
-				url : "<?php echo site_url();?>/Table/delete_cart",
+				url : "<?php echo site_url();?>/Update/delete_cart",
 				method : "POST",
 				data : {row_id : row_id},
 				success :function(data){
@@ -638,11 +640,11 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		var id=<?php echo $this->session->userdata('id');?>;
 
 	   $.ajax({
-		url:"<?php echo base_url(); ?>Table/clear",
+		url:"<?php echo base_url(); ?>Update/clear",
 		success:function(data)
 		{
 			//alert(ii);
-			window.location = "<?php echo site_url();?>/Table/menu/"+iih+"/"+id;
+			window.location = "<?php echo site_url();?>/Update/menu/"+iih+"/"+id;
 		}
 	   });
  
@@ -683,10 +685,11 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
         <div class="tab-pane active in" id="signin">
 		<h2>Sign-In</h2>
 
-            <form class="form-horizontal" action="<?php echo site_url();?>Table/validate_user_checkout" method="post">
+            <form class="form-horizontal" action="<?php echo site_url();?>Update/validate_user_checkout" method="post">
 			<input type="hidden" name="controller" value="<?=$controller?>">
 			<input type="hidden" name="table_id" required id="table_id" value="<?=$table[0]['id']?>" />
 			<input type="hidden" name="id" value="<?=$id;?>">
+			<input type="hidden" name="oid" value="<?=$order;?>">
 			<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id'];?>">
 						<input type="hidden" name="type" value="<?=$type?>">
 
@@ -724,7 +727,7 @@ $url= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 $controller=array_slice(explode('/', $url), -1)[0];
 
 ?>
-            <form class="form-horizontal" action="<?php echo site_url();?>Table/save_customer_checkout" method="post">
+            <form class="form-horizontal" action="<?php echo site_url();?>Update/save_customer_checkout" method="post">
 			<input type="hidden" name="controller" value="<?=$controller?>">
 			<input type="hidden" name="id" value="<?=$id;?>">
 			<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id'];?>">

@@ -281,6 +281,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 									</form>
     					<form action="<?php echo site_url();?>table/save_cart" method="post">
 						<input type="hidden" name="id" value="<?=$id?>">
+						<input type="hidden" name="oid" value="<?=$order?>">
 						<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id']?>">
 						<input type="hidden" name="producttype" value="<?=$type?>">
 
@@ -298,7 +299,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 		{
 			?>
 		<input type="radio" name="address" required id="address" value="<?=$r['id']?>" />&nbsp;<?=$r['address']?>
-		<input type="radio" name="table_id" required id="table_id" value="<?=$table[0]['id']?>" />
+		<input type="radio" name="table_id" required id="table_id" value="<?=$table?>" />
 		<label for="address"> ,<?=$r['city']?>,<?=$r['pincode']?></label>
 		<br />
 			<?php
@@ -321,6 +322,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 			?>
 			<form action="<?php echo site_url();?>table/save_cart" method="post">
 						<input type="hidden" name="id" value="<?=$id?>">
+						<input type="hidden" name="oid" value="<?=$order?>">
 									<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id']?>">
 			<?php
 		}
@@ -372,7 +374,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
                                             </li>
                                         </ul>
 										<input type="hidden" name="radio" value="Table">
-										<input type="hidden" name="table_id" required id="table_id" value="<?=$table[0]['id']?>" />
+										<input type="hidden" name="table_id" required id="table_id" value="<?=$table?>" />
 										<input type="hidden" name="type" value="table">
 										 <?php
 										}
@@ -685,7 +687,7 @@ $sql1a = "SELECT count(*) as count FROM customer_address where IsActive=0 and cu
 
             <form class="form-horizontal" action="<?php echo site_url();?>Table/validate_user_checkout" method="post">
 			<input type="hidden" name="controller" value="<?=$controller?>">
-			<input type="hidden" name="table_id" required id="table_id" value="<?=$table[0]['id']?>" />
+			<input type="hidden" name="table_id" required id="table_id" value="<?=$table?>" />
 			<input type="hidden" name="id" value="<?=$id;?>">
 			<input type="hidden" name="hotel_id" value="<?=$hotel_details[0]['id'];?>">
 						<input type="hidden" name="type" value="<?=$type?>">

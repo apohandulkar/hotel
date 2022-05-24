@@ -863,9 +863,11 @@ a:hover {
 			  <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-12">
                           <a href="<?php echo site_url();?>waiter/waiter/table_order" class="btn btn-dblue" role="button">
-						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;">0</span></a>  
+						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcounttb?></span></a>  
 						 
-                          <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue active" role="button">Kitchen
+             <a href="<?php echo site_url();?>waiter/waiter/Add_on" class="btn btn-dblue" role="button">
+						 Add On <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountadd?></span></a>             
+             <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue active" role="button">Kitchen
  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountowk?></span></a>
  
                           <a href="<?php echo site_url();?>waiter/waiter/Call" class="btn btn-dblue" role="button"> Call  

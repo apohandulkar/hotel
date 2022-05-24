@@ -74,22 +74,30 @@ class Waiter_model extends CI_Model {
 	public function get_takeaway_order_list()
 	{
 		$hotel_id=$this->session->userdata('hotel_id');
-        $sql = "SELECT * FROM order_tbl where order_status='Waiting' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Takeaway'";
+        $sql = "SELECT * FROM order_tbl where order_status='Waiting' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Takeaway' ORDER BY id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
 	}
 	public function get_table_order_list()
 	{
 		$hotel_id=$this->session->userdata('hotel_id');
-        $sql = "SELECT * FROM order_tbl where order_status='Waiting' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Table'";
+        $sql = "SELECT * FROM order_tbl where order_status='Waiting' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Table' ORDER BY id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
-	}		
+	}	
+	
+	public function get_add_on_list()
+	{
+		$hotel_id=$this->session->userdata('hotel_id');
+        $sql = "SELECT * FROM order_tbl where order_status='Waiting' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Add_On' and paid_unpaid='unpaid' ORDER BY id DESC";
+        $record = $this->db->query($sql);
+        return $record->result_array();
+	}	
 	
 	public function get_cash_order_list()
 	{
 		$hotel_id=$this->session->userdata('hotel_id');
-        $sql = "SELECT * FROM order_tbl where order_status='WaitingForPayment' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Takeaway'";
+        $sql = "SELECT * FROM order_tbl where order_status='WaitingForPayment' and  IsActive=0 and hotel_id='$hotel_id' and comming_from='Takeaway' ORDER BY id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
 	}	
@@ -97,7 +105,7 @@ class Waiter_model extends CI_Model {
 	public function get_deliver_order_list()
 	{
 		$hotel_id=$this->session->userdata('hotel_id');
-        $sql = "SELECT * FROM order_tbl where IsActive=0 and order_status='Waiting' and hotel_id='$hotel_id' and comming_from='Deliver'";
+        $sql = "SELECT * FROM order_tbl where IsActive=0 and order_status='Waiting' and hotel_id='$hotel_id' and comming_from='Deliver' ORDER BY id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
 	}	
@@ -131,7 +139,7 @@ class Waiter_model extends CI_Model {
 	public function get_open_order_list()
 	{
 		$hotel_id=$this->session->userdata('hotel_id');
-        $sql = "SELECT * FROM order_tbl where IsActive=0 and hotel_id='$hotel_id' and `order_status`='Accept' and `food_status`!='deliver' and waiting_for_payment='no'";
+        $sql = "SELECT * FROM order_tbl where IsActive=0 and hotel_id='$hotel_id' and `order_status`='Accept' and `food_status`!='deliver' and waiting_for_payment='no' ORDER BY id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
 	}

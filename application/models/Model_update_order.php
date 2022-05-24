@@ -1,5 +1,5 @@
 <?php
-class Home_model extends CI_Model {
+class Model_update_order extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
@@ -279,11 +279,12 @@ date_default_timezone_set("Asia/Kolkata");
 	public function save_cart($post_data)
 	{
 		$id=$post_data['id'];
+		$oid=$post_data['oid'];
 				
 		$address=$post_data['address'];	
 		$table_id=$post_data['table_id'];		
 		$payment_method=$post_data['payment_method'];	
-		$comming_from=$post_data['radio'];	
+			
 		$state=$post_data['state'];	
 	date_default_timezone_set("Asia/Kolkata");
 	$numItems = count($this->cart->contents());
@@ -295,18 +296,28 @@ date_default_timezone_set("Asia/Kolkata");
 	$i++;
 	}
 //echo '765765'.$saved_rowid;
-
-		$sql = "SELECT max(order_id) as order_id FROM order_tbl where IsActive=0 and hotel_id='$saved_rowid'";
-        $record = $this->db->query($sql);
-        $oid=$record->result_array();
-		$order_id=$oid[0]['order_id']+1;
+		$sql = "SELECT * FROM order_tbl where order_id='$oid'";
+		$record = $this->db->query($sql);
+		$res= $record->result_array();
+		$mid=$res[0]['id'];
+		$pre_amount=$res[0]['total_amount'];
+		$pre_status=$res[0]['order_status'];
+		if($pre_status=='Waiting')
+		{
+		$comming_from="Table";
+		}else
+		{
+			$comming_from="Add_On";
+		}
+		$order_id=$oid;
 		$table_id = $table_id;
 		$cust_id=$id;
 		$addtress_id=$address;
 		$payment_method=$payment_method;
 		$order_status='Waiting';
 		$date=date('Y-m-d');
-		$total_amount=$this->cart->total();
+		$cart_amount=$this->cart->total();
+		$total_amount = $pre_amount + $cart_amount;
 		$time=date('H:i:s');
 		if($payment_method=='Cash On delivery')
 		{
@@ -321,7 +332,10 @@ date_default_timezone_set("Asia/Kolkata");
 		$array_client=array('order_id'=>$order_id,'hotel_id'=>$saved_rowid,'cust_id'=>$cust_id,'addtress_id'=>$addtress_id,'table_id'=>$table_id,
 		'payment_method'=>$payment_method,'order_status'=>$order_status,'date'=>$date,'total_amount'=>$total_amount,'time'=>$time,
 		'comming_from'=>$comming_from,'waiting_for_payment'=>$waiting_for_payment,'state'=>$state);
-		$this->db->insert('order_tbl',$array_client);
+	 	$this->db->where('order_id',$order_id);
+
+		$this->db->update('order_tbl',$array_client);
+		
 		$order_id_row=$this->db->insert_id();
 		foreach($this->cart->contents() as $items)
 		{
@@ -332,7 +346,7 @@ date_default_timezone_set("Asia/Kolkata");
 			if($qty > 0)
 			{
 			//$time=
-		$array_client=array('order_id'=>$order_id_row,'menu_id'=>$menu_id,'qty'=>$qty);
+		$array_client=array('order_id'=>$mid,'menu_id'=>$menu_id,'qty'=>$qty);
 		$this->db->insert('order_menu',$array_client);
 			}
 	 	}
@@ -360,7 +374,7 @@ date_default_timezone_set("Asia/Kolkata");
 		date_default_timezone_set("Asia/Kolkata");
 		$date=date("Y-m-d");
 		
-	   $sql = "SELECT * FROM order_tbl where (`comming_from`='Deliver' OR `comming_from`='Takeaway' OR `comming_from`='Table' OR `comming_from`='Add_On') AND IsActive=0 and `food_status`!='deliver'  and `cust_id`='$id' and date='$date' order by id DESC";
+	   $sql = "SELECT * FROM order_tbl where (`comming_from`='Deliver' OR `comming_from`='Takeaway' OR `comming_from`='Table') AND IsActive=0 and `food_status`!='deliver'  and `cust_id`='$id' and date='$date' order by id DESC";
         $record = $this->db->query($sql);
         return $record->result_array();
 	}	

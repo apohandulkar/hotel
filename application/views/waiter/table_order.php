@@ -854,8 +854,10 @@ a:hover {
 			  <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-12">
                           <a href="<?php echo site_url();?>waiter/waiter/table_order" class="btn btn-dblue active" role="button">
-						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountaw?></span></a>                 
-                          <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue" role="button">Kitchen
+						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcounttb?></span></a>                 
+             <a href="<?php echo site_url();?>waiter/waiter/Add_on" class="btn btn-dblue" role="button">
+						 Add On <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountadd?></span></a>             
+             <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue" role="button">Kitchen
  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountowk?></span></a>
  
                           <a href="<?php echo site_url();?>waiter/waiter/Call" class="btn btn-dblue" role="button"> Call  
@@ -893,6 +895,7 @@ a:hover {
 						
 						$cust_id=$r['cust_id'];
 						$order_status=$r['order_status'];
+            $table_id=$r['table_id'];
 						$sqlcc = "SELECT * FROM customer where id=$cust_id";
 						$recordcc = $this->db->query($sqlcc);
 						$acc= $recordcc->result_array();
@@ -937,6 +940,16 @@ a:hover {
 								<td colspan="2" style="text-align:right">
 								<?=$r['payment_method']?> <br /><font color="red"><?=$r['paid_unpaid']?></font>
 								</td >
+                <td>
+                  <?php
+                  
+                  $sql = "SELECT * FROM tables where id='$table_id'";
+                  $record = $this->db->query($sql);
+                  $res=$record->result_array();
+                  echo " ".$res[0]['name'];
+                  
+                  ?>
+                </td>
 								</tr>
 								<tr>
 								<td style="border-top: 0px solid #CED4DA;border-bottom: 0px solid #CED4DA;">

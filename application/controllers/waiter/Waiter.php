@@ -95,6 +95,17 @@ Class Waiter Extends MY_Controller{
 		$data['main_content'] = 'waiter/table_order';
 		$this->load->view('waiter/includes/template', $data);
 	}
+
+	public function Add_on()
+	{		
+		$id=$this->session->userdata('waiter_id');
+		$hotel_id=$this->session->userdata('hotel_id');
+        $data['active_Takeaway'] = 'active';
+		$data['title'] = 'Table Order';	
+		$data['order_list'] = $this->Waiter_model->get_add_on_list();
+		$data['main_content'] = 'waiter/add_on';
+		$this->load->view('waiter/includes/template', $data);
+	}
 	
 	public function cash()
 	{		

@@ -57,6 +57,20 @@
 	$takeawaydaw=$recordtakedaw->result_array();
 	$dcountaw=$takeawaydaw[0]['count'];	
 	
+
+	//table
+	$sqltab = "SELECT count(*) as count FROM order_tbl where IsActive=0 and hotel_id='$hotel_id' and comming_from='Table' and `order_status`='Waiting' and `food_status`!='deliver'";
+	//echo $sqltaked;
+	$recordtakedawt = $this->db->query($sqltab);
+	$tabledaw=$recordtakedawt->result_array();
+	$dcounttb=$tabledaw[0]['count'];
+
+	//add_on
+	$sqladd = "SELECT count(*) as count FROM order_tbl where IsActive=0 and hotel_id='$hotel_id' and comming_from='Add_On' and `order_status`='Waiting' and `food_status`!='deliver'";
+	//echo $sqltaked;
+	$recordtakedawa = $this->db->query($sqladd);
+	$adddaw=$recordtakedawa->result_array();
+	$dcountadd=$adddaw[0]['count'];	
 	
 	//cash
 	$sqltakedawc = "SELECT count(*) as count FROM order_tbl where IsActive=0 and hotel_id='$hotel_id' and comming_from='Takeaway' and `order_status`='WaitingForPayment' and `food_status`!='deliver'";

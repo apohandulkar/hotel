@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Table extends CI_Controller {
+class Update extends CI_Controller {
 	
 	public function __construct(){
 	   parent::__construct();
-		$this->load->model('admin_api/Home_model');
+		$this->load->model('Model_update_order');
 		$this->load->model('hotel_api/Hotel_model');
 		$this->load->model('hotel_api/Table_model');
 		
@@ -13,63 +13,9 @@ class Table extends CI_Controller {
 
 	}
 	
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
-	 
-	public function index($id=NULL)
-	{	
-		$id=$this->uri->segment(2);
-		$data['active_home'] = 'active';
-		$data['title'] = 'Home';	
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['home_list'] = $this->Home_model->get_hotel_list();
-		$post_data = $this->input->post();
-		$city=$post_data['city'];
-		if($city=='')
-		{
-		$city='Pune';
-		}
-		else
-		{
-		$city=$post_data['city'];
-		}
-		$contain=$post_data['contain'];
-		$data['items'] = $this->cart->contents();
-		$data['cart_total'] = $this->cart->total();
+	
 
-		$data['home_lists']=$this->Home_model->get_city_hotel_list($post_data);
-		$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
-		$data1=array(
-				'city'=> $city,
-				'id'=>$id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$this->load->view('home', $data);
-	}
 
-	/* public function home()
-	{	
-		$data['active_home'] = 'active';
-		$data['title'] = 'Home';	
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['home_list'] = $this->Home_model->get_hotel_list();
-		//$data['main_content'] = 'home';
-		$this->load->view('home', $data);
-	} */
 
 	public function restaurants()
 	{	
@@ -88,10 +34,10 @@ class Table extends CI_Controller {
 				);
 			$this->session->set_userdata($data1);
 		$this->session->set_userdata('contain', $contain);
-		$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+		$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+		$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 	//	redirect("home/index");
 
 		$this->load->view('restaurants', $data);
@@ -157,18 +103,18 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($id);
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($id);
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$this->load->view('restaurant_details', $data);
 		
 	}
 	
-	
+
 
 	
-	public function menu($id=NULL,$tid=NULL,$cid=NULL)
+	public function menu($id=NULL,$tid=NULL,$cid=NULL,$oid=NULL)
 	{	
 		$data['active_OnlineTakeaway'] = 'active';
 		$data['title'] = 'Menu';
@@ -178,12 +124,13 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($id);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($id);
 		$data['table'] = $this->Table_model->get_table_details($tid);
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['order'] = $oid;
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
-		$this->load->view('table_take', $data);
+		$this->load->view('table/table_update_take', $data);
 		
 	}	
 	
@@ -253,44 +200,6 @@ class Table extends CI_Controller {
 		return $output;
 	}	
 	
-	/* function show_cart(){ 
-		$output = '';
-		$no = 0;
-		foreach ($this->cart->contents() as $items) {
-			if($items['qty'] > 0)
-				{
-			$no++;
-			$output .='
-				<tr>
-					<td width="30%">'.$items['name'].'</td>
-					<td width="40%"><input type="button" value="-" id="'.$items['rowid'].'"menu_id="'.$items['menu_id'].'"
-					product_name="'.$items['name'].'"product_price="'.$items['price'].'"hotel_id="'.$items['hotel_id'].'"
-					quantity="'.$items['qty'].'" class="romove_cart" style="color:red;border: 0px solid #fff;width:30%">
-					<input type="button" value="'.$items['qty'].'" class="" style="margin-left: -5px;border: 0px solid #fff;width:30%">
-					<input type="button" id="'.$items['rowid'].'"menu_id="'.$items['menu_id'].'" 
-					product_name="'.$items['name'].'"product_price="'.$items['price'].'"hotel_id="'.$items['hotel_id'].'"
-					quantity="'.$items['qty'].'" value="+" class="add_qty_cart" style="margin-left: -5px;color:green;border: 0px solid #fff;width:30%"></td>
-					
-					<td width="20%"><i class="fa fa-rupee"></i>'.number_format($items['subtotal']).'</td>
-					<td width="5%">
-					
-					<button type="button" id="'.$items['rowid'].'" 
-					product_name="'.$items['name'].'"product_price="'.$items['price'].'"
-					quantity="'.$items['qty'].'" class="romove_cart1 btn btn-danger btn-sm"><i class="fa fa-times" aria-hidden="true"></i>
-</button></td>
-				</tr>
-			';
-			}
-		}
-		$output .= '
-			<tr>
-				<th colspan="1"></th>
-				<th colspan="1"></th>
-				<th colspan="2">'.'Total <i class="fa fa-rupee"></i>'.number_format($this->cart->total()).'</th>
-			</tr>
-		';
-		return $output;
-	} */
 
 	function load_cart(){ 
 		echo $this->show_cart();
@@ -341,7 +250,7 @@ class Table extends CI_Controller {
 		$data['active_I_am_restaurant'] = 'active';
 		$data['title'] = 'I am Restaurants';
 		$post_data = $this->input->post();
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data1=array(
 				'id'=>$id,
 				'logged_in'=>TRUE
@@ -388,7 +297,7 @@ class Table extends CI_Controller {
 	move_uploaded_file($_FILES["banner"]["tmp_name"], "$upload_dir1/" . $img1);
 	
 	
-			$query=$this->Home_model->save_hotel($post_data,$path,$path1);
+			$query=$this->Model_update_order->save_hotel($post_data,$path,$path1);
 			if($query){
 				$this->session->set_flashdata('success_message', 'Hotel Added successfully!');
 				redirect('Home/I_am_restaurant','refresh');
@@ -404,7 +313,7 @@ class Table extends CI_Controller {
 		$controller=$post_data['controller'];
 		$city=$post_data['city'];
 		$this->session->set_userdata('city', $city);
-			$query=$this->Home_model->save_customer($post_data);
+			$query=$this->Model_update_order->save_customer($post_data);
 			if($query){
 			$data1=array(
 				'city'=> $city,
@@ -412,9 +321,9 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 				$this->load->view('restaurants', $data);
 			}
 		
@@ -423,7 +332,7 @@ class Table extends CI_Controller {
 	public function update_customer()
 	{
 		$post_data = $this->input->post();
-			$query=$this->Home_model->update_customer($post_data);
+			$query=$this->Model_update_order->update_customer($post_data);
 			if($query){
 			$data1=array(
 				'city'=> $city,
@@ -431,7 +340,7 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 				$this->session->set_userdata($data1);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 				$this->load->view('profile', $data);
 			}
 		
@@ -443,7 +352,7 @@ class Table extends CI_Controller {
 		$controller=$post_data['controller'];
 		$city=$post_data['city'];
 		$this->session->set_userdata('city', $city);
-			$query=$this->Home_model->validate_user($post_data);
+			$query=$this->Model_update_order->validate_user($post_data);
 			if($query){
 			
 				
@@ -455,10 +364,10 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 				//redirect("home/restaurants");
 
@@ -466,10 +375,10 @@ class Table extends CI_Controller {
 			}
 			else
 			{
-					$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+					$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 								$this->load->view('restaurants', $data);
 
@@ -477,11 +386,12 @@ class Table extends CI_Controller {
 	}
 	
 		
-	public function checkout($hotel_id=NULL,$tid=NULL,$id=NULL,$producttype=NULL)
+	public function checkout($hotel_id=NULL,$tid=NULL,$id=NULL,$oid=NULL,$producttype=NULL)
 	{	
 		$data['active_checkout'] = 'active';
 		$data['title'] = 'checkout';
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['order'] = $oid;
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 				$data['items'] = $this->cart->contents();
 				$data['cart_total'] = $this->cart->total();
 				$this->session->set_userdata('id', $id);
@@ -493,9 +403,9 @@ class Table extends CI_Controller {
 				);
 			$this->session->set_userdata($data1);
 		$data['table'] = $this->Table_model->get_table_details($tid);
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
 
-		$this->load->view('table_checkout', $data);
+		$this->load->view('table/table_update_checkout', $data);
 		
 	}		
 	
@@ -509,12 +419,12 @@ class Table extends CI_Controller {
 		$hotel_id=$post_data['hotel_id'];
 		$producttype=$post_data['type'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
 		
-		$query=$this->Home_model->save_customer($post_data);
+		$query=$this->Model_update_order->save_customer($post_data);
 
 			if($query){
 			/* 	$this->session->set_userdata('city', $city);
@@ -528,7 +438,7 @@ class Table extends CI_Controller {
 				
 				//redirect("home/restaurants");
 
-				$this->load->view('table_checkout', $data);
+				$this->load->view('table/table_update_checkout', $data);
 			}
 		
 	}	
@@ -540,14 +450,15 @@ class Table extends CI_Controller {
 		$id=$post_data['city'];
 		$hotel_id=$post_data['hotel_id'];
 		$producttype=$post_data['type'];
-		
+		echo $table_id;
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$data['table'] = $post_data['table_id'];
+		$data['order'] = $post_data['oid'];
 		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
-		$query=$this->Home_model->validate_user($post_data);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
+		$query=$this->Model_update_order->validate_user($post_data);
 			if($query){
 				
 			/* 	$this->session->set_userdata('city', $city);
@@ -558,57 +469,26 @@ class Table extends CI_Controller {
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 				//redirect("home/restaurants");
 
-				$this->load->view('table_checkout', $data);
+				$this->load->view('table/table_update_checkout', $data);
 			}
 			else
 			{
-					$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
-				$this->load->view('table_checkout', $data);
+					$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
+				$this->load->view('table/table_update_checkout', $data);
 
 			}
 	}
 
-	
-	public function save_address()
-	{
-	
-		$post_data = $this->input->post();
-		$id=$post_data['id'];
-		$hotel_id=$post_data['hotel_id'];
-		$producttype=$post_data['producttype'];
-		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['items'] = $this->cart->contents();
-		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
-		$query=$this->Home_model->save_address($post_data);
-
-			if($query){
-			/* 	$this->session->set_userdata('city', $city);
-				$this->session->set_userdata('id', $query); */
-						$data1=array(
-				'id'=>$query,
-				'producttype'=>$producttype,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-				
-				redirect("home/checkout/$hotel_id/$id/$producttype");
-
-				//$this->load->view('checkout', $data);
-			}
-		
-	}
 
 function clear()
  {
@@ -617,109 +497,15 @@ function clear()
   echo $this->view();
  }
 
-	public function profile($id=NULL)
-	{	
-		$data['active_restaurants'] = 'active';
-		$data['title'] = 'My Profile';
-		$post_data = $this->input->post();
 
-		$data1=array(
-				'id'=>$id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$this->session->set_userdata('contain', $contain);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$this->load->view('profile', $data);
-		
-	}
-	
-	public function address($id=NULL)
-	{	
-		$data['active_restaurants'] = 'active';
-		$data['title'] = 'My Address';
-		$post_data = $this->input->post();
-
-		$data1=array(
-				'id'=>$id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$this->load->view('address', $data);
-		
-	}	
-	
-	public function delete_address($id=NULL,$aid=NULL)
-	{	
-		$data['active_restaurants'] = 'active';
-		$data['title'] = 'My Address';
-		$post_data = $this->input->post();
-		$query=$this->Home_model->delete_address($aid);
-
-		$data1=array(
-				'id'=>$id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-	//	$this->load->view('address', $data);
-		$this->load->view('address', $data);
-
-
-	}
-	
-	public function update_address()
-	{
-		$post_data = $this->input->post();
-			$query=$this->Home_model->update_address($post_data);
-			if($query){
-			$data1=array(
-				'id'=>$query,
-				'logged_in'=>TRUE
-				);
-				$this->session->set_userdata($data1);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				$this->load->view('address', $data);
-			}
-		
-	}	
-	
-	public function save_address_profile()
-	{
-	
-		$post_data = $this->input->post();
-		$id=$post_data['id'];
-		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$query=$this->Home_model->save_address_profile($post_data);
-
-			if($query){
-			/* 	$this->session->set_userdata('city', $city);
-				$this->session->set_userdata('id', $query); */
-						$data1=array(
-				'id'=>$query,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-				
-				$this->load->view('address', $data);
-
-				//$this->load->view('checkout', $data);
-			}
-		
-	}	
-	
 	public function save_cart()
 	{
 	
 		$post_data = $this->input->post();
 		$id=$post_data['id'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$query=$this->Home_model->save_cart($post_data);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		$query=$this->Model_update_order->save_cart($post_data);
 		$hotel_id=$post_data['hotel_id'];
 		$table_id=$post_data['table_id'];
 		$producttype=$post_data['producttype'];
@@ -746,25 +532,7 @@ function clear()
 		
 	}
 	
-	public function orderHistory($id=NULL)
-	{	
-		$data['active_restaurants'] = 'active';
-		$data['title'] = 'My Order';
-		$post_data = $this->input->post();
-
-		$data1=array(
-				'id'=>$id,
-				'hotel_id'=>$hotel_id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['order_list'] = $this->Home_model->get_order_list($id);
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$this->load->view('order', $data);
-		
-	}	
-	 
+	
 	public function search($id=NULL)
 	{	
 		$data['active_restaurants'] = 'active';
@@ -775,48 +543,16 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		
 
 		$this->load->view('search', $data);
 		
 	}
 	
-	public function order($id=NULL)
-	{	
-		$data['active_order'] = 'active';
-		$data['title'] = 'track order';
-		$data1=array(
-				'id'=>$id,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$data['order_list'] = $this->Home_model->get_order_list_not_deliver($id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		
-
-		$this->load->view('track_order', $data);
-		
-	}
 	
-	//ofline
-	public function ofTakeaway($id=NULL,$cid=NULL)
-	{	
-		$data['active_ofTakeaway'] = 'active';
-		$data['title'] = 'Menu';
-		$this->session->set_userdata('id', $cid);
-		$data1=array(
-				'id'=>$cid,
-				'logged_in'=>TRUE
-				);
-			$this->session->set_userdata($data1);
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($id);
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['items'] = $this->cart->contents();
-		$this->load->view('offlinetakeaway/menu_oftakeaway', $data);
-		
-	}
+	
+
 			
 	public function validate_user_checkout_of()
 	{
@@ -825,11 +561,11 @@ function clear()
 		$id=$post_data['city'];
 		$hotel_id=$post_data['hotel_id'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
-		$query=$this->Home_model->validate_user($post_data);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
+		$query=$this->Model_update_order->validate_user($post_data);
 			if($query){
 				
 			/* 	$this->session->set_userdata('city', $city);
@@ -839,10 +575,10 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 				//redirect("home/restaurants");
 				if (isset($post_data['redirect'])) {
@@ -854,10 +590,10 @@ function clear()
 			}
 			else
 			{
-					$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+					$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 				if (isset($post_data['redirect'])) {
 				redirect('home/reserveTable/'.$hotel_id, 'refresh');
 				}else{
@@ -872,7 +608,7 @@ function clear()
 	{	
 		$data['active_checkout'] = 'active';
 		$data['title'] = 'checkout';
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 				$data['items'] = $this->cart->contents();
 				$data['cart_total'] = $this->cart->total();
 				$this->session->set_userdata('id', $id);
@@ -883,7 +619,7 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
 
 		$this->load->view('offlinetakeaway/checkout', $data);
 		
@@ -893,8 +629,8 @@ function clear()
 	{	
 		$data['active_checkout'] = 'active';
 		$data['title'] = 'checkout';
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
 
 		$this->load->view('offlinetakeaway/reserve_table', $data);
 		
@@ -907,7 +643,7 @@ function clear()
 		$controller=$post_data['controller'];
 		$city=$post_data['city'];
 		$this->session->set_userdata('city', $city);
-			$query=$this->Home_model->save_customer($post_data);
+			$query=$this->Model_update_order->save_customer($post_data);
 			if($query){
 			$data1=array(
 				'city'=> $city,
@@ -915,9 +651,9 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 				$this->load->view('offlinetakeaway/restaurants', $data);
 			}
 		
@@ -926,7 +662,7 @@ function clear()
 	public function update_customer_of()
 	{
 		$post_data = $this->input->post();
-			$query=$this->Home_model->update_customer($post_data);
+			$query=$this->Model_update_order->update_customer($post_data);
 			if($query){
 			$data1=array(
 				'city'=> $city,
@@ -934,7 +670,7 @@ function clear()
 				'logged_in'=>TRUE
 				);
 				$this->session->set_userdata($data1);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 				$this->load->view('offlinetakeaway/profile', $data);
 			}
 		
@@ -946,7 +682,7 @@ function clear()
 		$controller=$post_data['controller'];
 		$city=$post_data['city'];
 		$this->session->set_userdata('city', $city);
-			$query=$this->Home_model->validate_user($post_data);
+			$query=$this->Model_update_order->validate_user($post_data);
 			if($query){
 			
 				
@@ -958,10 +694,10 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-				$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+				$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 				//redirect("home/restaurants");
 
@@ -969,10 +705,10 @@ function clear()
 			}
 			else
 			{
-					$data['home_list']=$this->Home_model->get_city_hotel_list($post_data);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
-				//$data['home_list'] = $this->Home_model->get_hotel_list();
-				$data['home_count'] = $this->Home_model->get_city_hotel_count($post_data);
+					$data['home_list']=$this->Model_update_order->get_city_hotel_list($post_data);
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+				//$data['home_list'] = $this->Model_update_order->get_hotel_list();
+				$data['home_count'] = $this->Model_update_order->get_city_hotel_count($post_data);
 			
 								$this->load->view('offlinetakeaway/restaurants', $data);
 
@@ -987,11 +723,11 @@ function clear()
 		$id=$post_data['city'];
 		$hotel_id=$post_data['hotel_id'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
-		$query=$this->Home_model->save_customer($post_data);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
+		$query=$this->Model_update_order->save_customer($post_data);
 
 			if($query){
 			/* 	$this->session->set_userdata('city', $city);
@@ -1017,7 +753,7 @@ function clear()
 	{
 		$post_data = $this->input->post();
 
-		 $res= $this->Home_model->save_reservetable($post_data);
+		 $res= $this->Model_update_order->save_reservetable($post_data);
 		 header('Content-Type: application/json');
         echo json_encode( $res );
 		
@@ -1036,11 +772,11 @@ function clear()
 		$hotel_id=$post_data['hotel_id'];
 		$producttype=$post_data['producttype'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$data['items'] = $this->cart->contents();
 		$data['cart_total'] = $this->cart->total();
-		$data['hotel_details'] = $this->Home_model->get_hotel_details($hotel_id);
-		$query=$this->Home_model->save_address($post_data);
+		$data['hotel_details'] = $this->Model_update_order->get_hotel_details($hotel_id);
+		$query=$this->Model_update_order->save_address($post_data);
 
 			if($query){
 			/* 	$this->session->set_userdata('city', $city);
@@ -1073,7 +809,7 @@ function clear()
 				);
 			$this->session->set_userdata($data1);
 		$this->session->set_userdata('contain', $contain);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		$this->load->view('offlinetakeaway/profile', $data);
 		
 	}
@@ -1090,8 +826,8 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
 		$this->load->view('offlinetakeaway/address', $data);
 		
 	}	
@@ -1101,15 +837,15 @@ function clear()
 		$data['active_restaurants'] = 'active';
 		$data['title'] = 'My Address';
 		$post_data = $this->input->post();
-		$query=$this->Home_model->delete_address($aid);
+		$query=$this->Model_update_order->delete_address($aid);
 
 		$data1=array(
 				'id'=>$id,
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
 	//	$this->load->view('address', $data);
 		$this->load->view('offlinetakeaway/address', $data);
 
@@ -1119,14 +855,14 @@ function clear()
 	public function update_address_of()
 	{
 		$post_data = $this->input->post();
-			$query=$this->Home_model->update_address($post_data);
+			$query=$this->Model_update_order->update_address($post_data);
 			if($query){
 			$data1=array(
 				'id'=>$query,
 				'logged_in'=>TRUE
 				);
 				$this->session->set_userdata($data1);
-				$data['home_info'] = $this->Home_model->get_home_page_setting();
+				$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 				$this->load->view('offlinetakeaway/address', $data);
 			}
 		
@@ -1138,8 +874,8 @@ function clear()
 		$post_data = $this->input->post();
 		$id=$post_data['id'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$query=$this->Home_model->save_address_profile($post_data);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		$query=$this->Model_update_order->save_address_profile($post_data);
 
 			if($query){
 			/* 	$this->session->set_userdata('city', $city);
@@ -1163,8 +899,8 @@ function clear()
 		$post_data = $this->input->post();
 		$id=$post_data['id'];
 		$this->session->set_userdata('id', $id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$query=$this->Home_model->save_cart($post_data);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		$query=$this->Model_update_order->save_cart($post_data);
 		$hotel_id=$post_data['hotel_id'];
 		$producttype=$post_data['producttype'];
 			if($query)
@@ -1201,9 +937,9 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
-		$data['order_list'] = $this->Home_model->get_order_list($id);
-		//$data['home_list'] = $this->Home_model->get_hotel_list();
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
+		$data['order_list'] = $this->Model_update_order->get_order_list($id);
+		//$data['home_list'] = $this->Model_update_order->get_hotel_list();
 		$this->load->view('offlinetakeaway/order', $data);
 		
 	}	
@@ -1219,8 +955,8 @@ function clear()
 				'logged_in'=>TRUE
 				);
 			$this->session->set_userdata($data1);
-		$data['order_list'] = $this->Home_model->get_order_list_not_deliver($id);
-		$data['home_info'] = $this->Home_model->get_home_page_setting();
+		$data['order_list'] = $this->Model_update_order->get_order_list_not_deliver($id);
+		$data['home_info'] = $this->Model_update_order->get_home_page_setting();
 		
 
 		$this->load->view('offlinetakeaway/track_order', $data);

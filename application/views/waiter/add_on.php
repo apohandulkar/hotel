@@ -1,18 +1,9 @@
-  <style>
+<style>
   body { padding-top:20px; }
 .container {
     max-width: 1200px;
 }
-.panel-body 
-.btn:not(.btn-block) { 
-	width:140px !important;
-	height:135px !important;
-	margin-bottom:10px !important;
-	vertical-align: middle !important;
-	text-align: center !important;
-	text-wrap: normal !important;
-	padding: 15px 0 0 0 !important;	
-}
+
 /* Font Size For Button Text */
 .glyphsize {
 	font-size:48px !important;
@@ -831,8 +822,8 @@ a:hover {
     text-decoration: none;
 }
   </style>
-<?php
-	include("head_q.php");
+  <?php
+		include("head_q.php");
 
   ?>
   <div class="main-panel">
@@ -842,10 +833,9 @@ a:hover {
 			  <div class="row">
                            <div class="col-xs-12 col-sm-12 col-md-12">
                           <a href="<?php echo site_url();?>waiter/waiter/Takeaway" class="btn btn-dblue" role="button">Takeaway 
-						  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountaw?></span></a> 
-						  
+						  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountaw?></span></a>   
 
-						  <a href="<?php echo site_url();?>waiter/waiter/cash" class="btn btn-dblue" role="button">Cash 
+						    <a href="<?php echo site_url();?>waiter/waiter/cash" class="btn btn-dblue" role="button">Cash 
 						  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountawc?></span></a> 
 						  
                           <a href="<?php echo site_url();?>waiter/waiter/Reserve" class="btn btn-dblue" role="button">Reserve
@@ -864,10 +854,10 @@ a:hover {
 			  <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-12">
                           <a href="<?php echo site_url();?>waiter/waiter/table_order" class="btn btn-dblue" role="button">
-						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcounttb?></span></a>                 
-             <a href="<?php echo site_url();?>waiter/waiter/Add_on" class="btn btn-dblue" role="button">
-						 Add On <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountadd?></span></a>             
-             <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue" role="button">Kitchen
+						 Table <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcounttb?></span></a>
+                         <a href="<?php echo site_url();?>waiter/waiter/Add_on" class="btn btn-dblue active" role="button">
+						 Add On <span style="background-color:#1BD50F;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountadd?></span></a>                
+                          <a href="<?php echo site_url();?>waiter/waiter/Kitchen" class="btn btn-dblue" role="button">Kitchen
  <span style="background-color:#9033FF;color:#fff;padding:0 2px 0 2px;font-size: 10px;"><?=$dcountowk?></span></a>
  
                           <a href="<?php echo site_url();?>waiter/waiter/Call" class="btn btn-dblue" role="button"> Call  
@@ -895,10 +885,8 @@ a:hover {
 				<div class="col-md-12">
 					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					<?php
-					$sql = "SELECT * FROM order_tbl where IsActive=0 and order_status='Waiting' and hotel_id='$hotel_id' and comming_from='Dinein'";
-					$record = $this->db->query($sql);
-					$a= $record->result_array();
-					foreach($a as $r)
+		
+					foreach($order_list as $r)
 					{
 						$id=$r['id'];
 						$sqlc = "SELECT count(*) as count FROM order_menu where order_id=$id";
@@ -906,24 +894,29 @@ a:hover {
 						$ac= $recordc->result_array();
 						
 						$cust_id=$r['cust_id'];
+						$order_status=$r['order_status'];
+                        $table_id=$r['table_id'];
 						$sqlcc = "SELECT * FROM customer where id=$cust_id";
 						$recordcc = $this->db->query($sqlcc);
 						$acc= $recordcc->result_array();
 						$date=date('y-m-d H:i:s');
 						$date1=$r['date'].' '.$r['time'];
 						$start_date = new DateTime($date);
-$since_start = $start_date->diff(new DateTime($date1));
-$day=$since_start->days.' days';
-$min=$since_start->i.' minutes';
-if($r['addtress_id']!='')
-									{
-									
-$addtress_id=$r['addtress_id'];
+                        $since_start = $start_date->diff(new DateTime($date1));
+                        $day=$since_start->days.' days';
+                        $min=$since_start->i.' minutes';
+
+
+/* 	$addtress_id=$r['addtress_id'];
+	if($addtress_id!='')
+	{
 						$sqlcca = "SELECT * FROM customer_address where id=$addtress_id";
 						$recordcca = $this->db->query($sqlcca);
 						$acca= $recordcca->result_array();
-									}
-					?>
+					} */
+					
+				
+						?>
 						<div class="col-md-12">
 						<div class="panel panel-default">
 							<div class="panel-heading" role="tab" id="headingOne_<?=$id?>">
@@ -936,15 +929,7 @@ $addtress_id=$r['addtress_id'];
 										<font color="#fff" size="3px"><?=$ac[0]['count']?> Items | ₹<?=$r['total_amount']?> 
 										<!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VIEW CART <i class="fa fa-briefcase" aria-hidden="true"></i>-->
 										<br />From : <?=$acc[0]['name']?> <br>
-										<?php
-										if($r['addtress_id']!='')
-									{
-										?>
-										<i class="fa fa-map-marker" aria-hidden="true"></i> <?php echo substr($acca[0]['address'], 0, 80);?>..
 										<font>  
-										<?php
-									}
-									?>
 								</a>
 								</h4>
 							</div>
@@ -952,11 +937,28 @@ $addtress_id=$r['addtress_id'];
 								<div class="panel-body">
 								<table class="table">
 								<tr>
+								<td colspan="2" style="text-align:right">
+								<?=$r['payment_method']?> <br /><font color="red"><?=$r['paid_unpaid']?></font>
+								</td >
+                                <td>
+                                <?php
+                                
+                                $sql = "SELECT * FROM tables where id='$table_id'";
+                                $record = $this->db->query($sql);
+                                $res=$record->result_array();
+                                echo " ".$res[0]['name'];
+                                
+                                ?>
+                                </td>
+								</tr>
+								<tr>
 								<td style="border-top: 0px solid #CED4DA;border-bottom: 0px solid #CED4DA;">
 								#<?=$r['order_id']?>
 								</td >
 								<td style="border-top: 0px solid #CED4DA;border-bottom: 0px solid #CED4DA;">
-								<input type="button" value="Ready All" class="pull-right" style="color:green">
+								
+								<a href="<?php echo site_url();?>waiter/waiter/Order_Accept/<?=$r['id']?>/Takeaway"  class="btn btn-success">Accept</a>
+								<a href="<?php echo site_url();?>waiter/waiter/Order_Decline/<?=$r['id']?>/Takeaway"  class="btn btn-danger">Decline</a>
 								</td>
 								</tr>
 								<tr>
@@ -986,31 +988,20 @@ $addtress_id=$r['addtress_id'];
 									<td  width="50%">
 										<?php echo $m['qty']. ' × '.$am1[0]['menu'];?>
 										</td>
-										<td  width="50%">
-											<input type="button" value="Ready" class="pull-right" style="color:green">
-										</td>
+									
 									<?php
 								
 								}
-								if($r['addtress_id']!='')
-									{
-										?>
-										<tr>
-											<td style="color:#306048">
-												Address : <?=$acca[0]['address']?>
-											</td>
-										</tr>
-										<?php
-									}
-									?>
+								?>
+								
 										
 								</table>
-								
 								</div>
 							</div>
 						</div>
 						</div>
-					<?php
+						<?php
+					
 					}
 					?>
 						
